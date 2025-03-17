@@ -3,22 +3,30 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 
 const Home = () => {
 
+  const [newTask, setNewTask] = useState("");
+  const [showInput, setShowInput] = useState(false);
+  const [addTime, setAddTime] = useState(false);
+  const [editingTaskId, setEditingTaskId] = useState(null);
+
   const[items,setItems] = useState(
     [
       {
         id:1,
         checked: true,
-        item: "Study React"
+        item: "Study React",
+        time:"0:00"
       },
       {
         id:2,
         checked: true,
-        item: "Study AI"
+        item: "Study AI",
+        time:"0:00"
       },
       {
         id:3,
         checked: true,
-        item: "Play BB"
+        item: "Play BB",
+        time:"0:00"
       }
     ])
 
@@ -32,7 +40,24 @@ const Home = () => {
     setItems(items.filter((item) => item.id !== id));
   };
 
+  const handleNewTask = (taskName) => {
+    const newTask = {
+      id: items.length + 1, // Assign a unique ID based on the current list length
+      checked: false,
+      item: taskName
+    };
+  
+    setItems([...items, newTask]); // Add the new task to the existing list
+  };
 
+  const handleNewTime = (id, time) => {
+    setItems(items.map((item) =>
+      item.id === id ? { ...item, time: time } : item // Properly update the time for the matching id
+    ));
+  };
+  
+  
+  
  
 
 
@@ -42,25 +67,96 @@ const Home = () => {
 
           <h2 className='mt-10 bg-white text-2xl font-bold p-1'>Orgainze your daily tasks !!</h2>
 
+          <div className="flex flex-col items-center justify-center text-xl font-bold text-white mt-5 space-y-5">
+  {!showInput && (
+    <button
+      className="rounded-lg shadow-lg p-4 bg-red-500 hover:bg-red-700"
+      onClick={() => setShowInput(true)}
+    >
+      + Add New Task
+    </button>
+  )}
+
+  {showInput && (
+    <div className="flex flex-row items-center space-x-7">
+      <input
+        type="text"
+        placeholder="Enter task name"
+        className="border rounded bg-slate-400 px-3 py-2"
+        value={newTask}
+        onChange={(e) => setNewTask(e.target.value)}
+      />
+      <button
+        className="mt-3 rounded-lg  bg-green-600 hover:bg-green-800 text-white rounded px-5 py-2"
+        onClick={() => {
+          handleNewTask(newTask); // Add the new task
+          setNewTask(""); // Clear the input field
+          setShowInput(false); // Hide the input box
+        }}
+      >
+        Add Task
+      </button>
+    </div>
+  )}
+</div>
+
+
+          <h2 className='rounded-lg shadow-lg p-3 bg-red-500 font-bold text-2xl text-white mt-4 ml-20 mr-20'>List of Tasks to complete!!</h2>
+
           {/* <ul className="flex flex-col mt-15 py-10 rounded-lg bg-white  space-y-5 text-xl font-bold"> */}
-            {items.map((item) =>(
-                <li key={item.id} className="mt-10 ml-25 mr-25 flex items-center justify-between px-4 py-4 bg-gray-100 rounded-lg shadow-lg">
+            
+          <div className="mt-10 space-y-7 ml-30 mr-30">
+          {items.map((item) => (
+  <li
+    key={item.id}
+    className="mt-10 ml-25 mr-25 flex items-center justify-between px-4 py-4 bg-gray-100 rounded-lg shadow-lg"
+  >
+    <input
+      type="checkbox"
+      checked={item.checked}
+      onChange={() => handleCheck(item.id)}
+      className="w-10 h-10 cursor-pointer"
+    />
 
-                  <input type="checkbox"
-                          checked={item.checked}
-                          onChange={() => handleCheck(item.id)}
-                          className="w-10 h-10 cursor-pointer " />
+    <label className="text-xl font-bold">{item.item}</label>
 
-                  <label className="text-xl font-bold" >{item.item}</label>
+    <span className="text-gray-600">{item.time}</span> {/* Display due time */}
 
-                  <button className="bg-red-600 rounded-lg shadow-lg px-5 py-3"  onClick={() => handleDelete(item.id)}>
-                      <RiDeleteBin6Line className="text-3xl"/>
-                  </button>
+    {editingTaskId === item.id ? (
+      <div className="flex">
+        <input
+          type="text"
+          placeholder="Enter due time"
+          className="border rounded px-3 py-2"
+          onChange={(e) => handleNewTime(item.id, e.target.value)} // Update due time
+        />
+        <button
+          className="ml-3 bg-green-600 text-white rounded px-5 py-2"
+          onClick={() => setEditingTaskId(null)} // Close the input field
+        >
+          Save
+        </button>
+      </div>
+    ) : (
+      <button
+        className="rounded-lg px-7 py-4 bg-blue-600 text-white font-bold"
+        onClick={() => setEditingTaskId(item.id)} // Show the input field
+      >
+        + Add Due Time
+      </button>
+    )}
 
-                </li>
-                ))
-            }
-          {/* </ul> */}
+    <button
+      className="bg-red-600 rounded-lg shadow-lg px-5 py-3"
+      onClick={() => handleDelete(item.id)}
+    >
+      <RiDeleteBin6Line className="text-3xl" />
+    </button>
+  </li>
+))}
+
+          </div>
+      
 
     </div>
   )
