@@ -142,7 +142,7 @@ const Home = () => {
         className="rounded-lg px-7 py-4 bg-blue-600 text-white font-bold"
         onClick={() => setEditingTaskId(item.id)} // Show the input field
       >
-        + Add Due Time
+        + Fix Due Time
       </button>
     )}
 
