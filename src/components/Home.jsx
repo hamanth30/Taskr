@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { RiDeleteBin6Line } from "react-icons/ri";
+import Completed from './Completed';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
 
@@ -7,7 +9,9 @@ const Home = () => {
   const [showInput, setShowInput] = useState(false);
   const [addTime, setAddTime] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
-
+  const [completedTasks, setCompletedTasks] = useState([]); 
+  const navigate = useNavigate(); 
+  
   const[items,setItems] = useState(
     [
       {
@@ -56,21 +60,22 @@ const Home = () => {
     ));
   };
   
-  const handleConfirm = (id) => {
-    const completedTask = items.find(item => item.id === id);
+  const handleComplete = (id) => {
+    // Find the completed task
+    const completedTask = items.find((item) => item.id === id);
   
-    // Check if the task is marked as completed (checked)
+    // Ensure the task exists and is checked
     if (completedTask && completedTask.checked) {
-      setItems(items.filter(item => item.id !== id)); // Remove the task from the current list
-      console.log("Task moved to completed page:", completedTask);
-      // Add logic here to move completedTask to the completed tasks page
+      // Remove the completed task from the `items` list
+      setItems(items.filter((item) => item.id !== id));
+  
+      // Add the completed task to the `completedTasks` state
+      setCompletedTasks((prevCompletedTasks) => [...prevCompletedTasks, completedTask]);
     } else {
-      console.log("Task is not marked as completed!");
-      // Optionally, you could show a message to the user
+      alert("Task must be marked as completed to move!");
     }
   };
   
- 
 
 
   return (
@@ -79,15 +84,26 @@ const Home = () => {
 
           <h2 className='mt-10 bg-white text-2xl font-bold p-1'>Orgainze your daily tasks !!</h2>
 
-          <div className="flex flex-col items-center justify-center text-xl font-bold text-white mt-5 space-y-5">
+          <div className="flex flex-row items-center justify-center text-xl font-bold text-white mt-5 space-x-5">
   {!showInput && (
     <button
-      className="rounded-lg shadow-lg p-4 bg-red-500 hover:bg-red-700"
+      className="rounded-lg shadow-lg p-4 bg-blue-600 hover:bg-blue-800"
       onClick={() => setShowInput(true)}
     >
       + Add New Task
     </button>
   )}
+
+    <button className="bg-green-600 hover:bg-green-700 p-4 rounded-lg shadow-lg" 
+    onClick={() => {
+    if (completedTasks.length > 0) {
+      navigate("/completed");
+    } else {
+      alert("No tasks have been completed yet!");
+    }
+  }}>View Completed Tasks</button>
+
+    <button className="bg-red-500 hover:bg-red-700 p-4 rounded-lg shadow-lg">View Incompleted Tasks</button>
 
   {showInput && (
     <div className="flex flex-row items-center space-x-7">
@@ -106,7 +122,7 @@ const Home = () => {
           setShowInput(false); // Hide the input box
         }}
       >
-        Add Task
+        + Add Task
       </button>
     </div>
   )}
@@ -132,7 +148,7 @@ const Home = () => {
 
       <button
         className="bg-green-600 text-white font-bold text-xl rounded-lg shadow-lg px-5 py-3"
-        onClick={() => handleConfirm(item.id)}
+        onClick={() => handleComplete(item.id)}
       >
         Completed??
       </button>
@@ -151,10 +167,10 @@ const Home = () => {
           onChange={(e) => handleNewTime(item.id, e.target.value)} // Update due time
         />
         <button
-          className="ml-3 bg-green-600 text-white rounded px-5 py-2"
+          className="ml-3 bg-green-600 font-bold text-white rounded px-5 py-2"
           onClick={() => setEditingTaskId(null)} // Close the input field
         >
-          Save
+          + Fix Due Time
         </button>
       </div>
     ) : (
