@@ -7,17 +7,16 @@ import Completed from './components/Completed'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [completedTasks, setCompletedTasks] = useState([]);
-   
+  const [completedTasks, setCompletedTasks] = useState([]); // State for completed tasks
+
   return (
     <Router>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/completed" element={<Completed completedTasks={completedTasks} />} />
-    </Routes>
-  </Router>
-  )
+      <Routes>
+        <Route path="/" element={<Home setCompletedTasks={setCompletedTasks} />} />
+        <Route path="/completed" element={<Completed completedTasks={completedTasks} />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
