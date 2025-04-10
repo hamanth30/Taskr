@@ -56,7 +56,19 @@ const Home = () => {
     ));
   };
   
+  const handleConfirm = (id) => {
+    const completedTask = items.find(item => item.id === id);
   
+    // Check if the task is marked as completed (checked)
+    if (completedTask && completedTask.checked) {
+      setItems(items.filter(item => item.id !== id)); // Remove the task from the current list
+      console.log("Task moved to completed page:", completedTask);
+      // Add logic here to move completedTask to the completed tasks page
+    } else {
+      console.log("Task is not marked as completed!");
+      // Optionally, you could show a message to the user
+    }
+  };
   
  
 
@@ -117,6 +129,14 @@ const Home = () => {
       onChange={() => handleCheck(item.id)}
       className="w-10 h-10 cursor-pointer"
     />
+
+      <button
+        className="bg-green-600 text-white font-bold text-xl rounded-lg shadow-lg px-5 py-3"
+        onClick={() => handleConfirm(item.id)}
+      >
+        Completed??
+      </button>
+
 
     <label className="text-xl font-bold">{item.item}</label>
 

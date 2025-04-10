@@ -3,12 +3,14 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import Home from './components/Home'
 import './App.css'
+import Completed from './components/Completed'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-      <Home/>
+       <Home/>
+      //<Completed/>
   )
 }
 
